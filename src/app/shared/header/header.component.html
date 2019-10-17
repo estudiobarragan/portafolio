@@ -33,14 +33,16 @@
                 <li class="rk-menu__item"><a href="contact.html" class="rk-menu__link">Contact Us</a>
                 </li>
             </ul>
-            <form class="rk-search">
-                <input type="text" placeholder="Search" id="urku-search" class="rk-search-field">
+
+            <div class="rk-search">
+                <input type="text" (keyup.enter)="buscarProducto(txtBuscar.value)" #txtBuscar placeholder="Buscar..." id="urku-search" class="rk-search-field">
                 <label for="urku-search">
             <svg>
               <use xlink:href="assets/img/symbols.svg#icon-search"></use>
             </svg>
           </label>
-            </form>
+            </div>
+
         </nav>
     </div>
 </header>
