@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Producto } from '../Interfaces/producto.interface';
+import { reject } from 'q';
 
 
 @Injectable({
@@ -18,15 +19,18 @@ export class ProductosService {
    }
 
   private cargarProductos(){
-    this._http.get('https://portfolio-82abf.firebaseio.com/productos_idx.json')
-        .subscribe((resp: Producto[])=>{
-          this.cargando=false;
-          this.productos = resp;
-          // Si se quiere meter una demora para ver el loading
-          /* setTimeout(() => {
+    return new Promise( (resolve, reject) => {
+      this._http.get('https://portfolio-82abf.firebaseio.com/productos_idx.json')
+          .subscribe((resp: Producto[])=>{
             this.cargando=false;
-          }, 1000); */
-        });
+            this.productos = resp;
+            resolve();
+            // Si se quiere meter una demora para ver el loading
+            /* setTimeout(() => {
+              this.cargando=false;
+            }, 1000); */
+          });
+    })
   }
 
   getProducto(id:string){
@@ -34,10 +38,24 @@ export class ProductosService {
   }
 
   buscarProducto(termino: string){
-    this.productosFiltrado = this.productos.filter( producto =>{
-      return true;
-    })
-    console.log(this.productosFiltrado);
-    
+    if( this.productos.length === 0){
+      this.cargarProductos().then( ()=> {
+        this.filtrarProductos(termino);
+      })
+    }else{
+      this.filtrarProductos(termino);
+    }
+  }
+  
+  private filtrarProductos( termino: string){
+    this.productosFiltrado=[];
+    termino = termino.toLocaleLowerCase();
+
+    this.productos.forEach( prod =>{
+      const tituloLower = prod.titulo.toLocaleLowerCase();
+      if(prod.categoria.indexOf(termino)>=0 || tituloLower.indexOf(termino)>=0 ){
+        this.productosFiltrado.push(prod);
+      }
+    });
   }
 }

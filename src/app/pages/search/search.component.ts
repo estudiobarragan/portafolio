@@ -11,7 +11,7 @@ export class SearchComponent implements OnInit {
 
   constructor(
     private _route: ActivatedRoute,
-    public productoService: ProductosService
+    public _productoService: ProductosService
   ) { }
 
   ngOnInit() {
@@ -19,7 +19,7 @@ export class SearchComponent implements OnInit {
     this._route.params
         .subscribe(params=>{
           console.log(params['termino']);
-          this.productoService.buscarProducto(params['termino']);
+          this._productoService.buscarProducto(params['termino']);
         })
   }
 
